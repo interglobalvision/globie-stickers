@@ -28,6 +28,7 @@ function errorNotify(error){
   util.log(util.colors.red('Error'), error.message);
 }
 
+
 gulp.task('javascript', function() {
   gulp.src('www/js/main.js')
   .pipe(sourcemaps.init())
@@ -38,6 +39,7 @@ gulp.task('javascript', function() {
   .pipe(babel({
     presets: ['es2015']
   }))
+  .on('error', console.error.bind(console))
   .pipe(uglify())
   .on('error', errorNotify)
   .pipe(rename({suffix: '.min'}))
