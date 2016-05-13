@@ -1,6 +1,8 @@
 /* jshint browser: true, devel: true, indent: 2, curly: true, eqeqeq: true, futurehostile: true, latedef: true, undef: true, unused: true, esversion: 6 */
 /* global $, document, Modernizr */
 
+let stickers = '';
+
 let app = {
   // Application Constructor
   initialize: function() {
@@ -11,7 +13,11 @@ let app = {
   // Bind any events that are required on startup. Common events are:
   // 'load', 'deviceready', 'offline', and 'online'.
   bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+      document.addEventListener('deviceready', this.onDeviceReady, false);
+    } else {
+      this.onDeviceReady();
+    }
   },
   // deviceready Event Handler
   //
@@ -19,6 +25,11 @@ let app = {
   // function, we must explicitly call 'app.receivedEvent(...);'
   onDeviceReady: function() {
     app.receivedEvent('deviceready');
+
+    stickers = new Stickers({
+      'container': 'mainCanvas'
+    });
+
   },
   // Update DOM on a Received Event
   receivedEvent: function(id) {
@@ -44,12 +55,11 @@ class Stickers {
     this.stage.addEventListener('pressmove', event =>  this.stagePressMove(event));
     this.stage.addEventListener('pressup', event =>  this.stagePressUp(event));
 
-    createjs.Ticker.addEventListener('tick', event =>  this.enterFrame(event));
+    //createjs.Ticker.addEventListener('tick', event =>  this.enterFrame(event));
 
-    
     createjs.Touch.enable(this.stage);
 
-    this.drawCircle();
+    //this.drawCircle();
 
   }
 
@@ -289,11 +299,4 @@ class Stickers {
 
 };
 
-let stickers = new Stickers({
-  'container': 'demoCanvas'
-});
-
-stickers.loadImage('../img/busan.jpg');
-
 app.initialize();
-
