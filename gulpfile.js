@@ -50,7 +50,9 @@ gulp.task('javascript', function() {
 });
 
 gulp.task('javascript-library', function() {
-  gulp.src('www/js/library/*.js')
+  gulp.src([
+    './www/js/library/*.js',
+  ])
   .pipe(concat('library.js'))
   .pipe(gulp.dest('www/js'))
   .pipe(notify({ message: 'Javascript Library task complete' }));
@@ -67,11 +69,11 @@ gulp.task('style', function() {
   .on('error', errorNotify)
   .pipe(autoprefixer())
   .on('error', errorNotify)
-  .pipe(gulp.dest('css'))
+  .pipe(gulp.dest('www/css'))
   .pipe(rename({suffix: '.min'}))
   .pipe(minifycss())
   .on('error', errorNotify)
-  .pipe(gulp.dest('css'))
+  .pipe(gulp.dest('www/css'))
   .pipe(notify({ message: 'Style task complete' }));
 });
 
