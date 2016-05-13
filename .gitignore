@@ -4,3 +4,18 @@
 **/css/site.min.css
 **/js/*.min.js
 **/js/*.min.js.map
+
+## CORDOVA
+# Mac
+.DS_Store
+
+# Node
+npm-debug.log
+/node_modules
+
+# Cordova
+/platforms
+/plugins
+
+# res
+resources/signing
