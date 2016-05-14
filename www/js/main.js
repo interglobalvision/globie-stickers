@@ -13,19 +13,7 @@ let app = {
   // Bind any events that are required on startup. Common events are:
   // 'load', 'deviceready', 'offline', and 'online'.
   bindEvents: function() {
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
-      document.addEventListener('deviceready', this.onDeviceReady, false);
-    } else {
-      this.onDeviceReady();
-    }
-
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicitly call 'app.receivedEvent(...);'
-  onDeviceReady: function() {
-    app.receivedEvent('deviceready');
+    document.addEventListener('deviceready', this.onDeviceReady, false);
 
     stickers = new Stickers({
       'container': 'mainCanvas'
@@ -46,6 +34,19 @@ let app = {
 
       stickers.loadImage('../img/globie.png');
     });
+
+    // Share
+    document.getElementById('insert-globie').addEventListener('click', function(e) {
+      e.preventDefault();
+
+    });
+  },
+  // deviceready Event Handler
+  //
+  // The scope of 'this' is the event. In order to call the 'receivedEvent'
+  // function, we must explicitly call 'app.receivedEvent(...);'
+  onDeviceReady: function() {
+    app.receivedEvent('deviceready');
 
   },
   // Update DOM on a Received Event
