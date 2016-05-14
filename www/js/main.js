@@ -6,34 +6,73 @@ let stickers = '';
 let app = {
   // Application Constructor
   initialize: function() {
+    var that = this;
+
     this.bindEvents();
+
+    // Set Stickers (canvas)
+    stickers = new Stickers({
+      'container': 'mainCanvas'
+    });
+
+    // ---- Bind buttons
+    // Insert photo
+    document.getElementById('insert-photo').addEventListener('click', function(event) {
+      event.preventDefault();
+
+      that.cameraSuccess();
+    });
+
+    // Insert Globie
+    document.getElementById('insert-globie').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      stickers.loadImage('img/globie.png');
+    });
+
+    // Share
+    document.getElementById('share').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      let image = stickers.canvas.toDataURL();
+
+      let options = {
+        'files': [image]
+      };
+      window.plugins.socialsharing.share(null, null, image, null);
+    });
+
   },
   // Bind Event Listeners
   //
   // Bind any events that are required on startup. Common events are:
   // 'load', 'deviceready', 'offline', and 'online'.
   bindEvents: function() {
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
-      document.addEventListener('deviceready', this.onDeviceReady, false);
-    } else {
-      this.onDeviceReady();
-    }
+    document.addEventListener('deviceready', this.onDeviceReady, false);
   },
   // deviceready Event Handler
   //
   // The scope of 'this' is the event. In order to call the 'receivedEvent'
   // function, we must explicitly call 'app.receivedEvent(...);'
   onDeviceReady: function() {
-    app.receivedEvent('deviceready');
 
-    stickers = new Stickers({
-      'container': 'mainCanvas'
-    });
+    app.receivedEvent('deviceready');
 
   },
   // Update DOM on a Received Event
   receivedEvent: function(id) {
     console.log('Received Event: ' + id);
+  },
+
+  cameraSuccess: function() {
+
+    // Trigger cordova photo thing
+    navigator.camera.getPicture(function(image) {
+      stickers.loadImage(image);
+    }, function(error) {
+      console.log(error);
+    });
+
   }
 };
 
@@ -45,6 +84,8 @@ class Stickers {
     this.changed = false;
 
     this.container = options.container;
+
+    this.canvas = document.getElementById(options.container);
 
     this.fingers = [];
     this.stage = new createjs.Stage(this.container);
