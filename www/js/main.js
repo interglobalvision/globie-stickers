@@ -31,9 +31,15 @@ let app = {
     });
 
     // Share
-    document.getElementById('insert-globie').addEventListener('click', function(e) {
+    document.getElementById('share').addEventListener('click', function(e) {
       e.preventDefault();
 
+      let image = stickers.canvas.toDataURL();
+
+      let options = {
+        'files': [image]
+      };
+      window.plugins.socialsharing.share(null, null, image, null);
     });
 
   },
@@ -78,6 +84,8 @@ class Stickers {
     this.changed = false;
 
     this.container = options.container;
+
+    this.canvas = document.getElementById(options.container);
 
     this.fingers = [];
     this.stage = new createjs.Stage(this.container);
