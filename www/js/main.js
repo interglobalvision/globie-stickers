@@ -18,6 +18,7 @@ let app = {
     } else {
       this.onDeviceReady();
     }
+
   },
   // deviceready Event Handler
   //
@@ -28,6 +29,22 @@ let app = {
 
     stickers = new Stickers({
       'container': 'mainCanvas'
+    });
+
+    // Bind buttons
+
+    // Insert photo
+    document.getElementById('insert-photo').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Trigger cordova photo thing
+    });
+
+    // Insert Globie
+    document.getElementById('insert-globie').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      stickers.loadImage('../img/globie.png');
     });
 
   },
@@ -257,25 +274,19 @@ class Stickers {
     image.src = path;
 
     image.onload = function(event) {
-      let loadedImage = event.target;
-      that.addImage(loadedImage);
+      let bitmap = new createjs.Bitmap(event.target);
+
+      let bounds = bitmap.getBounds();
+      bitmap.regX = bounds.width / 2;
+      bitmap.regY = bounds.height / 2;
+
+      bitmap.addEventListener('mousedown', event => that.savePosition(event));
+      bitmap.addEventListener('pressmove', event => that.transform(event));
+
+      that.stage.addChild(bitmap);
+      that.update();
     }
 
-  }
-
-  addImage(image) {
-    let that = this;
-    let bitmap = new createjs.Bitmap(image);
-
-    let bounds = bitmap.getBounds();
-    bitmap.regX = bounds.width / 2;
-    bitmap.regY = bounds.height / 2;
-
-    bitmap.addEventListener('mousedown', event => this.savePosition(event));
-    bitmap.addEventListener('pressmove', event => this.transform(event));
-
-    this.stage.addChild(bitmap);
-    this.update();
   }
 
   getDistance(p1, p2) {
