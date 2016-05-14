@@ -6,33 +6,28 @@ let stickers = '';
 let app = {
   // Application Constructor
   initialize: function() {
-    this.bindEvents();
-  },
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
+    var that = this;
 
+    this.bindEvents();
+
+    // Set Stickers (canvas)
     stickers = new Stickers({
       'container': 'mainCanvas'
     });
 
-    // Bind buttons
-
+    // ---- Bind buttons
     // Insert photo
-    document.getElementById('insert-photo').addEventListener('click', function(e) {
-      e.preventDefault();
+    document.getElementById('insert-photo').addEventListener('click', function(event) {
+      event.preventDefault();
 
-      // Trigger cordova photo thing
+      that.cameraSuccess();
     });
 
     // Insert Globie
     document.getElementById('insert-globie').addEventListener('click', function(e) {
       e.preventDefault();
 
-      stickers.loadImage('../img/globie.png');
+      stickers.loadImage('img/globie.png');
     });
 
     // Share
@@ -40,18 +35,38 @@ let app = {
       e.preventDefault();
 
     });
+
+  },
+  // Bind Event Listeners
+  //
+  // Bind any events that are required on startup. Common events are:
+  // 'load', 'deviceready', 'offline', and 'online'.
+  bindEvents: function() {
+    document.addEventListener('deviceready', this.onDeviceReady, false);
   },
   // deviceready Event Handler
   //
   // The scope of 'this' is the event. In order to call the 'receivedEvent'
   // function, we must explicitly call 'app.receivedEvent(...);'
   onDeviceReady: function() {
+
     app.receivedEvent('deviceready');
 
   },
   // Update DOM on a Received Event
   receivedEvent: function(id) {
     console.log('Received Event: ' + id);
+  },
+
+  cameraSuccess: function() {
+
+    // Trigger cordova photo thing
+    navigator.camera.getPicture(function(image) {
+      stickers.loadImage(image);
+    }, function(error) {
+      console.log(error);
+    });
+
   }
 };
 
@@ -275,19 +290,25 @@ class Stickers {
     image.src = path;
 
     image.onload = function(event) {
-      let bitmap = new createjs.Bitmap(event.target);
-
-      let bounds = bitmap.getBounds();
-      bitmap.regX = bounds.width / 2;
-      bitmap.regY = bounds.height / 2;
-
-      bitmap.addEventListener('mousedown', event => that.savePosition(event));
-      bitmap.addEventListener('pressmove', event => that.transform(event));
-
-      that.stage.addChild(bitmap);
-      that.update();
+      let loadedImage = event.target;
+      that.addImage(loadedImage);
     }
 
+  }
+
+  addImage(image) {
+    let that = this;
+    let bitmap = new createjs.Bitmap(image);
+
+    let bounds = bitmap.getBounds();
+    bitmap.regX = bounds.width / 2;
+    bitmap.regY = bounds.height / 2;
+
+    bitmap.addEventListener('mousedown', event => this.savePosition(event));
+    bitmap.addEventListener('pressmove', event => this.transform(event));
+
+    this.stage.addChild(bitmap);
+    this.update();
   }
 
   getDistance(p1, p2) {
